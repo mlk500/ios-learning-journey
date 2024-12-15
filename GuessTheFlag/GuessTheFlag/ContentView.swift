@@ -28,6 +28,9 @@ struct ContentView: View {
     @State private var score: Int = 0
     @State private var totalQuestions = 0
     @State private var showRestart = false
+    
+    @State private var tappedFlag: Int? = nil
+    @State private var flagRotation = [0.0, 0.0, 0.0]
     let numberOfQuestions: Int = 10
     @ViewBuilder func FlagImage(_ countryName: String) -> some View {
         Image(countryName)
@@ -62,6 +65,10 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                         } label: {FlagImage(countries[number])}
+                            .opacity(tappedFlag == nil || tappedFlag == number ? 1 : 0.25)
+                            .scaleEffect(tappedFlag == nil || tappedFlag == number ? 1.0 : 0.75)
+                            .rotation3DEffect(.degrees(flagRotation[number]), axis: (x: 0, y: 1, z: 0))
+                            .animation(.easeInOut, value: tappedFlag)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -94,21 +101,27 @@ struct ContentView: View {
         
     }
     func flagTapped(_ number: Int){
-        if number == correctAnswer{
-            scoreTitle = "Correct!"
-            score+=1
-        }
-        else{
-            scoreTitle = "Wrong!\n That's the flag of \(countries[number])."
-        }
-        totalQuestions+=1
-        if totalQuestions == numberOfQuestions{
-            scoreTitle = "Game Over"
-            showRestart = true
-        }
-        else {
-            showingScore = true
-        }
+        tappedFlag = number
+        withAnimation(.linear(duration: 1)) {
+               flagRotation[number] += 360
+           }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // value matches duration above
+                if number == correctAnswer {
+                    scoreTitle = "Correct!"
+                    score += 1
+                } else {
+                    scoreTitle = "Wrong!\n That's the flag of \(countries[number])."
+                }
+                
+                totalQuestions += 1
+                if totalQuestions == numberOfQuestions {
+                    scoreTitle = "Game Over"
+                    showRestart = true
+                } else {
+                    showingScore = true
+                }
+                tappedFlag = nil
+            }
     }
     
     func askQuestion(){
