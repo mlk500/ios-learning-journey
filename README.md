@@ -24,6 +24,9 @@ This repository documents my journey learning iOS development through Paul Hudso
 5. BetterRest
    - An app that helps coffee drinkers get a better night's sleep by suggesting ideal bedtime.
    - Concepts learned: Machine Learning, Core ML, Date components, stepper
+     
+6. Edutainment <br>
+   An app for kids to practice multiplication tables, featuring dynamic question generation, and a user-friendly interface to make learning fun.
 
 
 ## Tools & Technologies
